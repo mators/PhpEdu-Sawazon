@@ -1,0 +1,12 @@
+# Vagrant
+/.vagrant
+
+# osx
+/.DS_Store
+*/.DS_Store
+
+# PHP Storm
+/.idea
+
+# phpmyadmin
+/phpmyadmin
