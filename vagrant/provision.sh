@@ -1,10 +1,10 @@
 #!/bin/bash
 
 # MySQL and Apache
-sudo debconf-set-selections <<< 'mysql-server-5.6 mysql-server/root_password password root'
-sudo debconf-set-selections <<< 'mysql-server-5.6 mysql-server/root_password_again password root'
+sudo debconf-set-selections <<< 'mysql-server-5.7 mysql-server/root_password password root'
+sudo debconf-set-selections <<< 'mysql-server-5.7 mysql-server/root_password_again password root'
 sudo apt-get update
-sudo apt-get -y install mysql-server-5.6 apache2
+sudo apt-get -y install mysql-server-5.7 apache2
 
 # PHP 5.6
 sudo apt-get update
@@ -19,9 +19,7 @@ curl -sS https://getcomposer.org/installer | sudo php -- --install-dir=/usr/loca
 # Fill database
 if [ ! -f /var/log/databasesetup ]
 then
-    echo "CREATE DATABASE sawazon_db" | mysql -uroot -proot
     mysql -uroot -proot < /var/www/html/sawazon_db.sql
-
     touch /var/log/databasesetup
 fi
 

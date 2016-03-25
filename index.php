@@ -1,6 +1,6 @@
 <?php
 
-require_once "inc/global.php";
+require_once "src/inc/global.php";
 
 use dispatcher\DefaultDispatcher;
 use router\Router;
