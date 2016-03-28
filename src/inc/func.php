@@ -1,11 +1,13 @@
 <?php
 
 
-function element($needle, $haystack, $default = NULL) {
+function element($needle, $haystack, $default = NULL)
+{
     return array_key_exists($needle, $haystack) ? $haystack[$needle] : $default;
 }
 
-function elements($needles, $haystack, $default = NULL) {
+function elements($needles, $haystack, $default = NULL)
+{
     $ret = [];
     foreach ($needles as $needle) {
         $ret[$needle] = element($needle, $haystack, $default);
@@ -13,36 +15,44 @@ function elements($needles, $haystack, $default = NULL) {
     return $ret;
 }
 
-function __($s) {
+function __($s)
+{
     return htmlentities($s, ENT_QUOTES, "utf-8");
 }
 
-function redirect($url) {
+function redirect($url)
+{
     header("Location: " . $url);
     die();
 }
 
-function isLoggedIn() {
+function isLoggedIn()
+{
     return array_key_exists("user", $_SESSION);
 }
 
-function isCurrentUser($username) {
+function isCurrentUser($username)
+{
     return user()["username"] == $username;
 }
 
-function isPost() {
+function isPost()
+{
     return count($_POST) > 0;
 }
 
-function post($key, $d = "") {
+function post($key, $d = "")
+{
     return element($key, $_POST, $d);
 }
 
-function get($key, $d = null) {
+function get($key, $d = null)
+{
     return element($key, $_GET, $d);
 }
 
-function user() {
+function user()
+{
     return element("user", $_SESSION, [
         "username" => "",
         "id" => "",
@@ -50,14 +60,14 @@ function user() {
     ]);
 }
 
-function stringFromImageInfo($file) {
+function stringFromImageInfo($file)
+{
     if (empty($file["tmp_name"])) {
         return "";
     }
     $dim = getimagesize($file['tmp_name']);
 
-    switch(strtolower($dim['mime']))
-    {
+    switch(strtolower($dim['mime'])) {
         case 'image/png':
             $image = imagecreatefrompng($file['tmp_name']);
             break;

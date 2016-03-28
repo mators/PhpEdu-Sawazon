@@ -5,7 +5,7 @@ require_once "func.php";
 session_start();
 
 spl_autoload_register(function ($className) {
-    $fileName = "./" . str_replace("\\", "/", $className) . ".php";
+    $fileName = __DIR__ . "/../" . str_replace("\\", "/", $className) . ".php";
 
     if (!is_readable($fileName)) {
         return false;

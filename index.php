@@ -6,7 +6,6 @@ use dispatcher\DefaultDispatcher;
 use router\Router;
 use models\NotFoundException;
 
-
 try {
     DefaultDispatcher::getInstance()->dispatch();
 } catch (NotFoundException $e) {

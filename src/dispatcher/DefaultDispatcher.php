@@ -46,7 +46,7 @@ class DefaultDispatcher implements Dispatcher {
         if (null === $this->matchedRoute) {
             throw new NotFoundException();
         }
-        $controllerName = "\\app\\controllers\\" . $this->matchedRoute->getController();
+        $controllerName = "\\controllers\\" . $this->matchedRoute->getController();
         $action = $this->matchedRoute->getAction();
 
         //dirty fix to try and load class
