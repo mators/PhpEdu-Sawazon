@@ -12,6 +12,10 @@ R::registerRoutes([
 
     R::route("/login", "auth", "login", "login"),
     R::route("/logout", "auth", "logout", "logout"),
-    R::route("/register", "auth", "register", "register")
+    R::route("/register", "auth", "register", "register"),
+
+    R::route("/admin", "admin", "index", "adminpanel"),
+    R::route("/admin/categories", "admin", "listCategories", "listCategories"),
+
 
 ]);

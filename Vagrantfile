@@ -6,6 +6,7 @@ VAGRANT_API_VERSION = 2
 Vagrant.configure(VAGRANT_API_VERSION) do |config|
   config.vm.box = "ubuntu/trusty64"
   config.vm.network :private_network, type: "dhcp"
+  config.vm.network :forwarded_port, guest: 80, host: 8080
 
   if !Vagrant.has_plugin?('vagrant-hostmanager')
     puts 'Required plugin vagrant-hostmanager is not installed! Install with "vagrant plugin install vagrant-hostmanager"'

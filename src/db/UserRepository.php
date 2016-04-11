@@ -2,6 +2,7 @@
 
 namespace db;
 
+use models\Picture;
 use models\User;
 
 
@@ -47,7 +48,8 @@ class UserRepository extends Repository
             "email" => $user->getEMail(),
             "username" => $user->getUsername(),
             "password" => $user->getPassword(),
-            "birthday" => $user->getBirthday()
+            "birthday" => $user->getBirthday(),
+            "photo" => $user->getPicture()->getPictureString()
         ]);
     }
 
@@ -59,7 +61,8 @@ class UserRepository extends Repository
             "email" => $user->getEMail(),
             "username" => $user->getUsername(),
             "password" => $user->getPassword(),
-            "birthday" => $user->getBirthday()
+            "birthday" => $user->getBirthday(),
+            "photo" => $user->getPicture()->getPictureString()
         ]);
     }
 
@@ -70,7 +73,7 @@ class UserRepository extends Repository
 
     protected function modelFromData($data)
     {
-        return new User(
+        $user = new User(
             $data->first_name,
             $data->last_name,
             $data->email,
@@ -79,6 +82,8 @@ class UserRepository extends Repository
             $data->birthday,
             $data->id
         );
+        $user->setPicture(new Picture($data->photo));
+        return $user;
     }
 
 }

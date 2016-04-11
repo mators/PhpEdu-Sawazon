@@ -2,11 +2,13 @@
 
 namespace controllers;
 
+use models\Picture;
 use views\CommonView;
 use views\LoginView;
 use views\RegisterView;
 use models\User;
 use db\UserRepository;
+use db\CategoryRepository;
 use router\Router as R;
 
 
@@ -62,7 +64,13 @@ class AuthController implements Controller
             redirect(R::getRoute("index")->generate());
         }
 
+        $categories = CategoryRepository::getInstance()->getAllWithDepth();
+
         if (isPost()) {
+
+            $errors = [];
+
+            $picture = new Picture();
 
             $user = new User(
                 post("firstname"),
@@ -72,8 +80,7 @@ class AuthController implements Controller
                 sha1(post("password")),
                 post("birthday")
             );
-
-            $errors = [];
+            $user->setPicture($picture);
 
             if (UserRepository::getInstance()->getByUsername(post("username")) != null) {
                 $errors["username"] = "Username is taken.";
@@ -82,7 +89,12 @@ class AuthController implements Controller
                 $errors["password2"] = "Passwords don't match.";
             }
 
-            if ($user->validate() && empty($errors)) {
+            $user->validate();
+            $picture->validate();
+
+            $errors = array_merge($user->getErrors(), $picture->getErrors(), $errors);
+
+            if (empty($errors)) {
                 UserRepository::getInstance()->save($user);
                 redirect(R::getRoute("login")->generate());
             }
@@ -90,14 +102,17 @@ class AuthController implements Controller
             echo new CommonView([
                 "title" => "Sawazon - Register",
                 "body" => new RegisterView([
-                    "errors" => array_merge($user->getErrors(), $errors)
+                    "errors" => $errors,
+                    "categories" => $categories
                 ])
             ]);
 
         } else {
             echo new CommonView([
                 "title" => "Sawazon - Register",
-                "body" => new RegisterView()
+                "body" => new RegisterView([
+                    "categories" => $categories
+                ])
             ]);
         }
     }

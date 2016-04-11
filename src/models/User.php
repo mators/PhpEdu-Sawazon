@@ -45,6 +45,11 @@ class User implements Model
     private $birthday;
 
     /**
+     * @var Picture
+     */
+    private $picture;
+
+    /**
      * @var array
      */
     private $errors = [];
@@ -68,6 +73,22 @@ class User implements Model
         $this->username = $username;
         $this->password = $password;
         $this->birthday = $birthday;
+    }
+
+    /**
+     * @return Picture
+     */
+    public function getPicture()
+    {
+        return $this->picture;
+    }
+
+    /**
+     * @param Picture $picture
+     */
+    public function setPicture($picture)
+    {
+        $this->picture = $picture;
     }
 
     /**
