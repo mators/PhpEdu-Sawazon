@@ -36,6 +36,11 @@ function isCurrentUser($username)
     return user()["username"] == $username;
 }
 
+function isAdmin()
+{
+    return user()['group'] == 'ADMIN';
+}
+
 function isPost()
 {
     return count($_POST) > 0;
@@ -56,7 +61,8 @@ function user()
     return element("user", $_SESSION, [
         "username" => "",
         "id" => "",
-        "email" => ""
+        "email" => "",
+        "group" => ""
     ]);
 }
 

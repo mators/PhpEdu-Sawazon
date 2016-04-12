@@ -12,6 +12,8 @@ class CommonView extends AbstractView
 
     private $title;
 
+    private $scripts = [];
+
     protected function outputHTML()
     {
         ?>
@@ -21,6 +23,7 @@ class CommonView extends AbstractView
             <meta charset="utf-8">
             <meta name="description" content="Sawazon">
             <meta name="author" content="Matija Oršolić, orsolic.matija@gmail.com">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
             <title><?php echo $this->title; ?></title>
 
@@ -56,9 +59,23 @@ class CommonView extends AbstractView
                         <ul class="nav navbar-nav navbar-right">
                             <?php if(isLoggedIn()) { ?>
                                 <li><a href=<?php echo R::getRoute("logout")->generate(); ?>>Logout</a></li>
+                                <li class="dropdown">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Settings <span class="caret"></span></a>
+                                    <ul class="dropdown-menu">
+                                        <li class="dropdown-header">User settings</li>
+                                        <li><a href="#">Action</a></li>
+                                        <li><a href="#">Another action</a></li>
+                                        <li><a href="#">Something else here</a></li>
+                                        <!--                                    <li role="separator" class="divider"></li>-->
+                                        <?php if(isAdmin()) { ?>
+                                            <li class="dropdown-header">Admin settings</li>
+                                            <li><a href="<?php echo R::getRoute("listCategories")->generate(); ?>">Categories</a></li>
+                                        <?php } ?>
+                                    </ul>
+                                </li>
                             <?php } else { ?>
-                                <li><a href=<?php echo R::getRoute("register")->generate(); ?>>Register</a></li>
-                                <li><a href=<?php echo R::getRoute("login")->generate(); ?>>Login</a></li>
+                                <li><a href="<?php echo R::getRoute("register")->generate(); ?>">Register</a></li>
+                                <li><a href="<?php echo R::getRoute("login")->generate(); ?>">Login</a></li>
                             <?php } ?>
                         </ul>
                         <form class="navbar-form navbar-right" role="search">
@@ -86,9 +103,18 @@ class CommonView extends AbstractView
             <!-- Bootstrap Core JavaScript -->
             <script src="/assets/js/bootstrap.min.js"></script>
 
+            <?php foreach ($this->scripts as $script) { ?>
+                <script src="<?php echo $script; ?>"></script>
+            <?php } ?>
+
         </body>
         </html>
         <?php
+    }
+
+    public function setScripts($scripts)
+    {
+        $this->scripts = $scripts;
     }
 
     public function setBody($body)

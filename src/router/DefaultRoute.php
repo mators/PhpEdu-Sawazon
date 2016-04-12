@@ -13,16 +13,21 @@ class DefaultRoute implements Route {
 
     private $params;
 
-    public function __construct($route, $controller, $action) {
+    private $permissions;
+
+    public function __construct($route, $controller, $action, $permissions = null) {
         $this->routeRegex = $route;
         $this->controller = $controller;
         $this->action = $action;
+        $this->permissions = $permissions;
         $this->params = [];
     }
 
     public function match($url) {
         $regex = "@^" . $this->routeRegex . "$@uD";
-        return (bool) preg_match($regex, $url, $this->params);
+        $user = user();
+        $hasPermission = $this->permissions == null || in_array($user['group'], $this->permissions);
+        return  $hasPermission && (bool) preg_match($regex, $url, $this->params);
     }
 
     public function generate(array $params = []) {

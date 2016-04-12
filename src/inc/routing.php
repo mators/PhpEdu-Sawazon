@@ -14,8 +14,9 @@ R::registerRoutes([
     R::route("/logout", "auth", "logout", "logout"),
     R::route("/register", "auth", "register", "register"),
 
-    R::route("/admin", "admin", "index", "adminpanel"),
-    R::route("/admin/categories", "admin", "listCategories", "listCategories"),
-
+    R::route("/categories", "category", "listCategories", "listCategories", ['ADMIN']),
+    R::route("/categories/add", "category", "add", "addCategory", ['ADMIN']),
+    R::route("/categories/(?P<id>\\d+)/edit", "category", "edit", "editCategory", ['ADMIN']),
+    R::route("/categories/(?P<id>\\d+)/delete", "category", "delete", "deleteCategory", ['ADMIN'])
 
 ]);

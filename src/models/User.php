@@ -50,6 +50,11 @@ class User implements Model
     private $picture;
 
     /**
+     * @var string
+     */
+    private $groupId;
+
+    /**
      * @var array
      */
     private $errors = [];
@@ -62,9 +67,10 @@ class User implements Model
      * @param $username string
      * @param $password string
      * @param $birthday string
+     * @param $groupId string
      * @param $userID int|null
      */
-    public function __construct($firstName, $lastName, $eMail, $username, $password, $birthday, $userID = null)
+    public function __construct($firstName, $lastName, $eMail, $username, $password, $birthday, $groupId, $userID = null)
     {
         $this->userID = $userID;
         $this->firstName = $firstName;
@@ -73,6 +79,23 @@ class User implements Model
         $this->username = $username;
         $this->password = $password;
         $this->birthday = $birthday;
+        $this->groupId = $groupId;
+    }
+
+    /**
+     * @return string
+     */
+    public function getGroupId()
+    {
+        return $this->groupId;
+    }
+
+    /**
+     * @param string $groupId
+     */
+    public function setGroupId($groupId)
+    {
+        $this->groupId = $groupId;
     }
 
     /**

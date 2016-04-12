@@ -20,6 +20,13 @@ class CategoryRepository extends Repository
         return self::$instance;
     }
 
+    public function update(Category $category) {
+        return parent::update($category->getCategoryId(), [
+            "name" => $category->getName(),
+            "description" => $category->getDescription()
+        ]);
+    }
+
     public function addCategory(Category $category, $parentId)
     {
         $sql = "CALL add_category(?, ?, ?, ?)";

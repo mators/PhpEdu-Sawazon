@@ -2,6 +2,7 @@
 
 namespace controllers;
 
+use db\GroupRepository;
 use models\Picture;
 use views\CommonView;
 use views\LoginView;
@@ -23,6 +24,7 @@ class AuthController implements Controller
 
         if (isPost()) {
             $user = UserRepository::getInstance()->getByUsernameAndPassword(post("username"), post("password"));
+            $group = GroupRepository::getInstance()->get($user->getGroupId());
 
             if (null === $user) {
                 $error = "Invalid username or password.";
@@ -36,7 +38,8 @@ class AuthController implements Controller
                 $_SESSION["user"] = [
                     "id" => $user->getUserID(),
                     "username" => $user->getUsername(),
-                    "email" => $user->getEMail()
+                    "email" => $user->getEMail(),
+                    "group" => $group->getName()
                 ];
 
                 redirect(R::getRoute("index")->generate());
@@ -78,7 +81,8 @@ class AuthController implements Controller
                 post("email"),
                 post("username"),
                 sha1(post("password")),
-                post("birthday")
+                post("birthday"),
+                null
             );
             $user->setPicture($picture);
 

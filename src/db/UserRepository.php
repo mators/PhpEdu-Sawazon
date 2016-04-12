@@ -80,6 +80,7 @@ class UserRepository extends Repository
             $data->username,
             $data->password,
             $data->birthday,
+            $data->group_id,
             $data->id
         );
         $user->setPicture(new Picture($data->photo));
