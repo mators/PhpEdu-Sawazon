@@ -65,7 +65,7 @@ class Picture implements Model
             }
 
             if (empty($this->errors)) {
-                $this->pictureString = stringFromImageInfo($file);
+                $this->pictureString = pngStringFromImageInfo($file);
             }
         }
 

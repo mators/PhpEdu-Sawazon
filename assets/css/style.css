@@ -2,6 +2,14 @@
     padding-top: 75px;
 }
 
+#smallerImg img {
+    min-height:50px; height:100px;
+}
+
+.thumbnail a {
+    text-decoration: none;
+}
+
 .center_div {
     margin: 0 auto;
     width: 50%;
@@ -15,6 +23,9 @@ h3 {
     .center_div {
         margin: 0 auto;
         width: 100%;
+    }
+    #smallerImg {
+        min-height:50px; height:75px;
     }
 }
 

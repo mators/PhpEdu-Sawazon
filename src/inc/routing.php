@@ -17,6 +17,8 @@ R::registerRoutes([
     R::route("/categories", "category", "listCategories", "listCategories", ['ADMIN']),
     R::route("/categories/add", "category", "add", "addCategory", ['ADMIN']),
     R::route("/categories/(?P<id>\\d+)/edit", "category", "edit", "editCategory", ['ADMIN']),
-    R::route("/categories/(?P<id>\\d+)/delete", "category", "delete", "deleteCategory", ['ADMIN'])
+    R::route("/categories/(?P<id>\\d+)/delete", "category", "delete", "deleteCategory", ['ADMIN']),
+    R::route("/categories/(?P<id>\\d+)/icon", "category", "getIcon", "getIcon"),
+    R::route("/categories/(?P<id>\\d+)/children", "category", "getChildren", "categoryChildren")
 
 ]);

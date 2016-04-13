@@ -66,7 +66,7 @@ function user()
     ]);
 }
 
-function stringFromImageInfo($file)
+function pngStringFromImageInfo($file)
 {
     if (empty($file["tmp_name"])) {
         return "";
@@ -90,5 +90,6 @@ function stringFromImageInfo($file)
     imagepng($image);
     $contents =  ob_get_contents();
     ob_end_clean();
-    return base64_encode($contents);
+    return $contents;
+//    return base64_encode($contents);
 }

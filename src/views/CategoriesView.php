@@ -9,8 +9,6 @@ class CategoriesView extends AbstractView
 {
     private $categories = [];
 
-    private $errors = [];
-
     protected function outputHTML()
     {
         ?>
@@ -22,19 +20,26 @@ class CategoriesView extends AbstractView
                         <h4 class="modal-title"></h4>
                     </div>
                     <div class="modal-body">
-                        <form class="form-horizontal" method="post" id="catForm" action="">
+                        <form class="form-horizontal" method="post" id="catForm" enctype="multipart/form-data" action="">
                             <div class="form-group">
                                 <label for="name" class="col-sm-2 control-label">Name</label>
                                 <div class="col-sm-10">
                                     <input type="text" class="form-control" id="name" name="name" placeholder="Category name" value=""/>
-                                    <span class="text-danger"><?php echo element("name", $this->errors, ""); ?></span>
+                                    <span class="text-danger"></span>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label for="description" class="col-sm-2 control-label">Description</label>
                                 <div class="col-sm-10">
                                     <textarea class="form-control" rows="5" id="description" name="description"></textarea>
-                                    <span class="text-danger"><?php echo element("description", $this->errors, ""); ?></span>
+                                    <span class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="icon" class="col-sm-2 control-label">Icon</label>
+                                <div class="col-sm-10">
+                                    <img id="iconImage" src="">
+                                    <input  type="file" id="file" name="file">
                                 </div>
                             </div>
                             <input id="parent-cat" type="hidden" name="parentId" value="">
@@ -77,11 +82,6 @@ class CategoriesView extends AbstractView
             <?php } ?>
         </div>
         <?php
-    }
-
-    public function setErrors($errors)
-    {
-        $this->errors = $errors;
     }
 
     public function setCategories($categories)

@@ -5,6 +5,7 @@ namespace controllers;
 
 use db\CategoryRepository;
 use models\Category;
+use models\Picture;
 use views\CategoriesView;
 use views\CommonView;
 use router\Router as R;
@@ -20,19 +21,24 @@ class CategoryController
         echo new CommonView([
             "title" => "Sawazon - Categories",
             "body" => new CategoriesView([
-                "categories" => $categories
+                "categories" => $categories,
             ]),
-            "scripts" => ['/assets/js/categories.js']
+            "scripts" => ['/assets/js/categories.js'],
         ]);
     }
 
     public function add()
     {
         if (isPost()) {
+            $icon = new Picture();
+            if (!$icon->validate()) {
+                redirect(R::getRoute("listCategories")->generate());
+            }
+
             $category = new Category(
                 post('name'),
                 post('description'),
-                null
+                $icon->getPictureString()
             );
 
             $parent = CategoryRepository::getInstance()->get(post('parentId'));
@@ -50,6 +56,14 @@ class CategoryController
             $categoryId = D::getInstance()->getMatched()->getParam("id");
             $category = CategoryRepository::getInstance()->get($categoryId);
 
+            $icon = new Picture();
+            if (!empty($_FILES['file']['name'])) {
+                if (!$icon->validate()) {
+                    redirect(R::getRoute("listCategories")->generate());
+                }
+                $category->setIcon($icon->getPictureString());
+            }
+
             $category->setName(post('name'));
             $category->setDescription(post('description'));
 
@@ -58,6 +72,37 @@ class CategoryController
             }
         }
         redirect(R::getRoute("listCategories")->generate());
+    }
+
+    public function getIcon()
+    {
+        header("Content-type: image/png");
+        $categoryId = D::getInstance()->getMatched()->getParam("id");
+        $category = CategoryRepository::getInstance()->get($categoryId);
+
+        $image = imagecreatefromstring($category->getIcon());
+        imagepng($image);
+        imagedestroy($image);
+    }
+
+    public function getChildren()
+    {
+        $categoryId = D::getInstance()->getMatched()->getParam("id");
+        $categories = CategoryRepository::getInstance()->getChildren($categoryId);
+
+        $arr = [];
+
+        /** @var Category $category */
+        foreach ($categories as $category) {
+            $arr[] = [
+                "id" => $category->getCategoryId(),
+                "name" => $category->getName(),
+                "description" => $category->getDescription(),
+                "iconURL" => R::getRoute("getIcon")->generate(["id" => $category->getCategoryId()])
+            ];
+        }
+
+        echo json_encode($arr);
     }
 
     public function delete()

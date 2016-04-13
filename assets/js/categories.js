@@ -7,6 +7,7 @@ $(document).on("click", ".open-edit-modal", function () {
     $(".modal-body #description").val(description);
     var id = $(this).data('id');
     $("#catForm").attr('action', '/categories/' + id + '/edit');
+    $("#iconImage").attr('src', '/categories/' + id + '/icon');
 });
 
 $(document).on("click", ".open-add-modal", function () {
@@ -17,4 +18,5 @@ $(document).on("click", ".open-add-modal", function () {
     $("#catForm").attr('action', '/categories/add');
     var id = $(this).data('parent-id');
     $(".modal-body #parent-cat").val(id);
+    $("#iconImage").attr('src', '');
 });

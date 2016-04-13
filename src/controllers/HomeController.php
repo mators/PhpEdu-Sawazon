@@ -2,8 +2,10 @@
 
 namespace controllers;
 
+use db\CategoryRepository;
 use views\CommonView;
 use views\ErrorView;
+use views\HomeView;
 
 
 class HomeController implements Controller
@@ -11,9 +13,13 @@ class HomeController implements Controller
 
     public function index()
     {
+        $categories = CategoryRepository::getInstance()->getAllWithDepth(["depth" => "1"]);
         echo new CommonView([
             "title" => "Sawazon",
-            "body" => "<div class='page'>hehe</div>"
+            "body" => new HomeView([
+                "categories" => $categories
+            ]),
+            "scripts" => ['/assets/js/home.js']
         ]);
     }
 
