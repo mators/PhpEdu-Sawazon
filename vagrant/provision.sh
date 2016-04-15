@@ -37,5 +37,6 @@ then
 
 	service apache2 restart
 	a2enmod rewrite
+	sudo rm /var/www/html/index.html
 	touch /var/log/apacheconfig
 fi
