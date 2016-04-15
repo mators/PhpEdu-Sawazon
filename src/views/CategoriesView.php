@@ -39,7 +39,7 @@ class CategoriesView extends AbstractView
                                 <label for="icon" class="col-sm-2 control-label">Icon</label>
                                 <div class="col-sm-10">
                                     <img id="iconImage" src="">
-                                    <input  type="file" id="file" name="file">
+                                    <input type="file" id="icon" name="file">
                                 </div>
                             </div>
                             <input id="parent-cat" type="hidden" name="parentId" value="">
@@ -53,33 +53,40 @@ class CategoriesView extends AbstractView
             </div><!-- /.modal-dialog -->
         </div><!-- /.modal -->
 
-        <div class="page container center_div">
-            <h3>Categories</h3>
+        <div class="page container">
+            <div class="row">
+                <div class="col-md-offset-2 col-md-8">
+                <h3>Categories</h3>
 
-            <button type="button" class="open-add-modal btn btn-primary btn-xs" data-toggle="modal" data-target="#myModal"
-                    data-parent-id="3">
-                <span class="glyphicon glyphicon-plus"></span>Add root category
-            </button>
-            <br>
-            <br>
-            <?php
-            /** @var Category $category */
-            foreach($this->categories as $category) { ?>
-                <div class="row">
-                    <div class="col-xs-offset-<?php echo $category->getDepth() - 1; ?> col-xs-10">
-                        <a class="open-edit-modal" href="" data-toggle="modal" data-target="#myModal"
-                           data-id="<?php echo $category->getCategoryId(); ?>"
-                            data-name="<?php echo $category->getName(); ?>"
-                             data-description="<?php echo $category->getDescription(); ?>">
-                            <?php echo $category->getName(); ?>
-                        </a>&nbsp;
-                        <button type="button" class="open-add-modal btn btn-default btn-xs" data-toggle="modal" data-target="#myModal"
-                                data-parent-id="<?php echo $category->getCategoryId(); ?>">
-                            <span class="glyphicon glyphicon-plus"></span>Add
-                        </button>
+                <button type="button" class="open-add-modal btn btn-primary btn-xs" data-toggle="modal" data-target="#myModal"
+                        data-parent-id="3">
+                    <span class="glyphicon glyphicon-plus"></span>Add root category
+                </button>
+                <br>
+                <br>
+                <?php
+                /** @var Category $category */
+                foreach($this->categories as $category) { ?>
+                    <div class="row">
+                        <div class="col-xs-offset-<?php echo $category->getDepth() - 1; ?> col-xs-10">
+                            <a class="open-edit-modal" href="" data-toggle="modal" data-target="#myModal"
+                               data-id="<?php echo $category->getCategoryId(); ?>"
+                                data-name="<?php echo $category->getName(); ?>"
+                                 data-description="<?php echo $category->getDescription(); ?>">
+                                <?php echo $category->getName(); ?>
+                            </a>&nbsp;
+                            <?php if ($category->getDepth() == 1) { ?>
+                                <button type="button" class="open-add-modal btn btn-default btn-xs" data-toggle="modal" data-target="#myModal"
+                                        data-parent-id="<?php echo $category->getCategoryId(); ?>">
+
+                                    <span class="glyphicon glyphicon-plus"></span>Add
+                                </button>
+                            <?php } ?>
+                        </div>
                     </div>
+                <?php } ?>
                 </div>
-            <?php } ?>
+            </div>
         </div>
         <?php
     }

@@ -135,9 +135,9 @@ class Category implements Model
         }
 
         if (empty($this->description)) {
-            $this->errors["description"] = "Catoegory description is required.";
+            $this->errors["description"] = "Category description is required.";
         } else if (strlen($this->description) > 500) {
-            $this->errors["description"] = "Catoegory description can be up to 500 characters long.";
+            $this->errors["description"] = "Category description can be up to 500 characters long.";
         }
 
         return empty($this->errors);

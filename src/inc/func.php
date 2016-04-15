@@ -36,6 +36,11 @@ function isCurrentUser($username)
     return user()["username"] == $username;
 }
 
+function isCurrentUserId($id)
+{
+    return user()["id"] == $id;
+}
+
 function isAdmin()
 {
     return user()['group'] == 'ADMIN';
@@ -48,7 +53,7 @@ function isPost()
 
 function post($key, $d = "")
 {
-    return element($key, $_POST, $d);
+    return trim(element($key, $_POST, $d));
 }
 
 function get($key, $d = null)
@@ -87,7 +92,7 @@ function pngStringFromImageInfo($file)
     }
 
     ob_start();
-    imagepng($image);
+    imagepng($image, null, 9);
     $contents =  ob_get_contents();
     ob_end_clean();
     return $contents;

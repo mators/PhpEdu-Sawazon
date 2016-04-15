@@ -8,11 +8,24 @@ use models\Category;
 use models\Picture;
 use views\CategoriesView;
 use views\CommonView;
+use views\BrowseView;
 use router\Router as R;
 use dispatcher\DefaultDispatcher as D;
 
 class CategoryController
 {
+
+    public function browse()
+    {
+        $categories = CategoryRepository::getInstance()->getAllWithDepth(["depth" => "1"]);
+        echo new CommonView([
+            "title" => "Sawazon",
+            "body" => new BrowseView([
+                "categories" => $categories
+            ]),
+            "scripts" => ['/assets/js/browse.js']
+        ]);
+    }
 
     public function listCategories()
     {

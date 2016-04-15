@@ -2,10 +2,10 @@
 
 namespace controllers;
 
-use db\CategoryRepository;
 use views\CommonView;
 use views\ErrorView;
 use views\HomeView;
+use router\Router as R;
 
 
 class HomeController implements Controller
@@ -13,14 +13,14 @@ class HomeController implements Controller
 
     public function index()
     {
-        $categories = CategoryRepository::getInstance()->getAllWithDepth(["depth" => "1"]);
-        echo new CommonView([
-            "title" => "Sawazon",
-            "body" => new HomeView([
-                "categories" => $categories
-            ]),
-            "scripts" => ['/assets/js/home.js']
-        ]);
+        if (isLoggedIn()) {
+            echo new CommonView([
+                "title" => "Sawazon",
+                "body" => new HomeView()
+            ]);
+        } else {
+            redirect(R::getRoute('browse')->generate());
+        }
     }
 
     public function error()

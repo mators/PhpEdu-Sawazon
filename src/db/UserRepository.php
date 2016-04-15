@@ -49,20 +49,22 @@ class UserRepository extends Repository
             "username" => $user->getUsername(),
             "password" => $user->getPassword(),
             "birthday" => $user->getBirthday(),
-            "photo" => $user->getPicture()->getPictureString()
+            "photo" => $user->getPicture()->getPictureString(),
+            "group_id" => $user->getGroupId()
         ]);
     }
 
     public function update(User $user)
     {
         parent::update($user->getUserID(), [
-            "firstname" => $user->getFirstName(),
-            "lastname" => $user->getLastName(),
+            "first_name" => $user->getFirstName(),
+            "last_name" => $user->getLastName(),
             "email" => $user->getEMail(),
             "username" => $user->getUsername(),
             "password" => $user->getPassword(),
             "birthday" => $user->getBirthday(),
-            "photo" => $user->getPicture()->getPictureString()
+            "photo" => $user->getPicture()->getPictureString(),
+            "group_id" => $user->getGroupId()
         ]);
     }
 

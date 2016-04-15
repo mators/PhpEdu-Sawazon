@@ -94,7 +94,7 @@ class CategoryRepository extends Repository
                         AND node.lft BETWEEN sub_parent.lft AND sub_parent.rgt
                         AND sub_parent.name = sub_tree.name
                 GROUP BY node.name
-                HAVING depth <= 1
+                HAVING depth = 1
                 ORDER BY node.lft";
 
         $statement = DBPool::getInstance()->prepare($sql);
@@ -111,9 +111,15 @@ class CategoryRepository extends Repository
         return $ret;
     }
 
-    public function  getLeafs()
+    public function  saveUserCategories($userId, $catIds)
     {
-
+        $sql = "INSERT INTO users_categories (user_id, category_id)
+                VALUES ";
+        foreach ($catIds as $catId) {
+            $sql .= "(" . $userId . ", " . $catId . "),";
+        }
+        $sql = substr($sql, 0, -1);
+        DBPool::getInstance()->prepare($sql)->execute();
     }
 
     protected function getTable()

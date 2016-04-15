@@ -16,6 +16,11 @@ class Picture implements Model
     private $errors = [];
 
     /**
+     * @var array|null
+     */
+    private $file = null;
+
+    /**
      * Image constructor.
      * @param string $pictureString
      */
@@ -40,14 +45,27 @@ class Picture implements Model
         $this->pictureString = $pictureString;
     }
 
+    /**
+     * @param array|null $file
+     */
+    public function setFile($file)
+    {
+        $this->file = $file;
+    }
+
     public function validate()
     {
         $this->errors = [];
 
-        $file = elements(self::$FILE_KEYS, $_FILES["file"]);
+        if (null == $this->file) {
+            $file = elements(self::$FILE_KEYS, $_FILES["file"]);
+        } else {
+            $file = $this->file;
+        }
 
         if ($file["error"] > 0) {
             $this->pictureString = "";
+            $this->errors["error"] = "Error";
         } else {
             if (!in_array(strtolower($file["type"]), self::$ALLOWED_FILE_TYPES)) {
                 $this->errors["file"] = "File format not supported.";

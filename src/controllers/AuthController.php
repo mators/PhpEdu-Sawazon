@@ -24,7 +24,6 @@ class AuthController implements Controller
 
         if (isPost()) {
             $user = UserRepository::getInstance()->getByUsernameAndPassword(post("username"), post("password"));
-            $group = GroupRepository::getInstance()->get($user->getGroupId());
 
             if (null === $user) {
                 $error = "Invalid username or password.";
@@ -34,7 +33,7 @@ class AuthController implements Controller
                     "body" => new LoginView(["error" => $error])
                 ]);
             } else {
-
+                $group = GroupRepository::getInstance()->get($user->getGroupId());
                 $_SESSION["user"] = [
                     "id" => $user->getUserID(),
                     "username" => $user->getUsername(),
@@ -73,6 +72,7 @@ class AuthController implements Controller
 
             $errors = [];
 
+            $group = GroupRepository::getInstance()->getSingleOrNull(["name" => "USER"]);
             $picture = new Picture();
 
             $user = new User(
@@ -82,7 +82,7 @@ class AuthController implements Controller
                 post("username"),
                 sha1(post("password")),
                 post("birthday"),
-                null
+                $group->getGroupId()
             );
             $user->setPicture($picture);
 
@@ -99,7 +99,11 @@ class AuthController implements Controller
             $errors = array_merge($user->getErrors(), $picture->getErrors(), $errors);
 
             if (empty($errors)) {
-                UserRepository::getInstance()->save($user);
+                $userId = UserRepository::getInstance()->save($user);
+                $catIds = post("categories");
+                if(!empty($catIds)) {
+                    CategoryRepository::getInstance()->saveUserCategories($userId, $catIds);
+                }
                 redirect(R::getRoute("login")->generate());
             }
 

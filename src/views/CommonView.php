@@ -51,23 +51,25 @@ class CommonView extends AbstractView
                     <!-- Collect the nav links, forms, and other content for toggling -->
                     <div class="collapse navbar-collapse" id="navbar-ex1-collapse">
                         <ul class="nav navbar-nav">
-                            <li><a href=<?php echo R::getRoute("index")->generate(); ?>>Home</a></li>
+                            <li><a href="<?php echo R::getRoute("index")->generate(); ?>">Home</a></li>
+                            <li><a href="<?php echo R::getRoute("browse")->generate(); ?>">Categories</a></li>
                             <?php if(isLoggedIn()) { ?>
                             <?php } else { ?>
                             <?php } ?>
                         </ul>
                         <ul class="nav navbar-nav navbar-right">
                             <?php if(isLoggedIn()) { ?>
-                                <li><a href=<?php echo R::getRoute("logout")->generate(); ?>>Logout</a></li>
                                 <li class="dropdown">
-                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Settings <span class="caret"></span></a>
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-cog"></span> <span class="caret"></span></a>
                                     <ul class="dropdown-menu">
-                                        <li class="dropdown-header">User settings</li>
-                                        <li><a href="#">Action</a></li>
-                                        <li><a href="#">Another action</a></li>
-                                        <li><a href="#">Something else here</a></li>
-                                        <!--                                    <li role="separator" class="divider"></li>-->
+                                        <li class="dropdown-header">User actions</li>
+                                        <li><a href="<?php echo R::getRoute("profile")->generate(); ?>">Profile</a></li>
+                                        <li><a href="<?php echo R::getRoute("accountSettings")->generate(["username" => user()["username"]]); ?>">Account settings</a></li>
+                                        <li><a href="<?php echo R::getRoute("addItem")->generate(["username" => user()["username"]]); ?>">Add item</a></li>
+                                        <li role="separator" class="divider"></li>
+                                        <li><a href="<?php echo R::getRoute("logout")->generate(); ?>">Logout</a></li>
                                         <?php if(isAdmin()) { ?>
+                                            <li role="separator" class="divider"></li>
                                             <li class="dropdown-header">Admin settings</li>
                                             <li><a href="<?php echo R::getRoute("listCategories")->generate(); ?>">Categories</a></li>
                                         <?php } ?>
