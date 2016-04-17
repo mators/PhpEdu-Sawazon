@@ -74,9 +74,6 @@ class AccountSettingsView extends AbstractView
                                     </div>
                                 </div>
                                 <input type="hidden" name="f" value="picForm">
-<!--                                <object data="/assets/img/default-avatar.jpg" type="image/jpg">-->
-<!--                                    <img src="">-->
-<!--                                </object>-->
                                 <img src="" alt="">
                                 <div class="form-group">
                                     <div class="col-sm-offset-2 col-sm-10">

@@ -101,7 +101,7 @@ class CategoryRepository extends Repository
         $statement->execute();
 
         if ($statement->rowCount() < 1) {
-            return null;
+            return [];
         }
 
         $ret = [];

@@ -62,6 +62,7 @@ class CommonView extends AbstractView
                                 <li class="dropdown">
                                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-cog"></span> <span class="caret"></span></a>
                                     <ul class="dropdown-menu">
+                                        <li class="dropdown-header">Signed in as <strong><?php echo __(user()["username"]); ?></strong></li>
                                         <li class="dropdown-header">User actions</li>
                                         <li><a href="<?php echo R::getRoute("profile")->generate(); ?>">Profile</a></li>
                                         <li><a href="<?php echo R::getRoute("accountSettings")->generate(["username" => user()["username"]]); ?>">Account settings</a></li>
@@ -82,9 +83,9 @@ class CommonView extends AbstractView
                         </ul>
                         <form class="navbar-form navbar-right" role="search">
                             <div class="form-group">
-                                <input type="text" class="form-control" placeholder="Search by tag..">
+                                <input type="text" class="form-control" placeholder="Search...">
                             </div>
-                            <button type="submit" class="btn btn-default">Search</button>
+                            <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-search"></span></button>
                         </form>
 
                     </div>

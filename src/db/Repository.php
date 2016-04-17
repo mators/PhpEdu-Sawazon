@@ -38,7 +38,7 @@ abstract class Repository
         $statement->execute($conditions);
 
         if ($statement->rowCount() < 1) {
-            return null;
+            return [];
         }
 
         $ret = [];

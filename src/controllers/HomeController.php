@@ -19,7 +19,7 @@ class HomeController implements Controller
                 "body" => new HomeView()
             ]);
         } else {
-            redirect(R::getRoute('browse')->generate());
+            redirect(R::getRoute("browse")->generate());
         }
     }
 

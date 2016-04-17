@@ -36,7 +36,10 @@ class PictureRepository extends Repository
 
     protected function modelFromData($data)
     {
-        return new Picture($data->photo);
+        return new Picture(
+            $data->photo,
+            $data->id
+        );
     }
 
 }

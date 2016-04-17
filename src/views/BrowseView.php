@@ -26,7 +26,7 @@ class BrowseView extends AbstractView
                         <div class="col-xs-6 col-sm-4 col-md-3 col-lg-2">
                             <div class="thumbnail">
                                 <a class="getChildren" data-id="<?php echo $category->getCategoryId(); ?>" href="#childrenWell">
-                                    <img id="smallerImg" src="<?php echo R::getRoute("getIcon")->generate(["id" => $category->getCategoryId()]); ?>" alt="...">
+                                    <img id="smallerImg" src="<?php echo R::getRoute("getIcon")->generate(["id" => $category->getCategoryId()]); ?>">
                                     <div class="caption">
                                         <h3><?php echo $category->getName(); ?></h3>
                                     </div>
@@ -38,8 +38,8 @@ class BrowseView extends AbstractView
             </div>
             <div id="childrenWell" class="well">
                 <div id="childrenDiv" class="row">
-                    <a href="" id="template" class="media col-xs-6 col-sm-4 col-md-2" hidden>
-                        <img class="pull-left img-responsive" src="" alt="" style="width: 50px">
+                    <a href="#category" id="template" class="cat media col-xs-6 col-sm-4 col-md-2" hidden>
+                        <img class="pull-left img-responsive child_img" src="">
                         <div class="media-body">
                             <h4 class="media-heading"></h4>
                         </div>

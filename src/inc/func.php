@@ -71,30 +71,16 @@ function user()
     ]);
 }
 
-function pngStringFromImageInfo($file)
+function isAjaxRequest()
 {
-    if (empty($file["tmp_name"])) {
-        return "";
-    }
-    $dim = getimagesize($file['tmp_name']);
+    return !empty($_SERVER['HTTP_X_REQUESTED_WITH']) &&
+            strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
+}
 
-    switch(strtolower($dim['mime'])) {
-        case 'image/png':
-            $image = imagecreatefrompng($file['tmp_name']);
-            break;
-        case 'image/jpeg':
-            $image = imagecreatefromjpeg($file['tmp_name']);
-            break;
-        case 'image/gif':
-            $image = imagecreatefromgif($file['tmp_name']);
-            break;
-        default: die();
-    }
-
-    ob_start();
-    imagepng($image, null, 9);
-    $contents =  ob_get_contents();
-    ob_end_clean();
-    return $contents;
-//    return base64_encode($contents);
+function chosenCurrency()
+{
+    return element("currency", $_SESSION, [
+        "short" => "USD",
+        "coefficient" => "1"
+    ]);
 }

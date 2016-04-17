@@ -6,12 +6,17 @@ use db\CategoryRepository;
 use db\CurrencyRepository;
 use db\ItemRepository;
 use db\PictureRepository;
+use db\ReviewRepository;
+use db\TagRepository;
+use db\UserRepository;
 use models\Item;
 use models\Picture;
+use models\Review;
 use router\Router as R;
 use dispatcher\DefaultDispatcher as D;
 use views\CommonView;
 use views\ItemFormView;
+use views\ItemView;
 
 
 class ItemController implements Controller
@@ -19,7 +24,40 @@ class ItemController implements Controller
 
     public function index()
     {
+        $itemId = D::getInstance()->getMatched()->getParam("id");
+        /** @var Item $item */
+        $item = ItemRepository::getInstance()->get($itemId);
 
+        if (null == $item) {
+            redirect(R::getRoute("error")->generate());
+        }
+        $tagsData = TagRepository::getInstance()->getAll(["item_id" => $itemId]);
+        $tags = [];
+        foreach ($tagsData as $data) {
+            $tags[] = $data->tag;
+        }
+        $item->setTags($tags);
+
+        $seller = UserRepository::getInstance()->get($item->getUserId());
+        $pictures = PictureRepository::getInstance()->getAll(["item_id" => $itemId]);
+        $reviews = ReviewRepository::getInstance()->getAll(["item_id" => $itemId]);
+        $usersReview = [];
+        /** @var Review $review */
+        foreach ($reviews as $review) {
+            $usersReview[] = UserRepository::getInstance()->get($review->getUserId());
+        }
+
+        echo new CommonView([
+            "title" => "Sawazon - ".$item->getName(),
+            "body" => new ItemView([
+                "item" => $item,
+                "pictures" => $pictures,
+                "seller" => $seller,
+                "reviews" => $reviews,
+                "usersReview" => $usersReview
+            ]),
+            "scripts" => ["/assets/js/editReviewModal.js"]
+        ]);
     }
 
     public function add()
@@ -45,9 +83,15 @@ class ItemController implements Controller
                 null
             );
 
+            $tags = array_unique(preg_split("/[\\s,]+/", post("tags")));
+
+            if (!empty($tags[0])) {
+                $item->setTags($tags);
+            }
+
             if ($item->validate()) {
                 $f = $_FILES['file'];
-                $filesCount = count($f['name']);
+                $filesCount = empty($f['name'][0]) ? 0 : count($f['name']);
                 $pics = [];
                 if ($filesCount > 0) {
                     for ($i = 0; $i < $filesCount; ++$i) {
@@ -57,7 +101,7 @@ class ItemController implements Controller
                             "type" => $f['type'][$i],
                             "size" => $f['size'][$i],
                             "tmp_name" => $f['tmp_name'][$i],
-                            "error" => $f['error'][$i]
+                            "error" => $f['error'][$i],
                         ]);
                         if ($picture->validate()) {
                             $pics[] = $picture->getPictureString();
@@ -66,6 +110,7 @@ class ItemController implements Controller
                 }
                 if ($filesCount == count($pics)) {
                     $itemId = ItemRepository::getInstance()->save($item);
+                    TagRepository::getInstance()->saveAll($itemId, $tags);
                     PictureRepository::getInstance()->saveAll($itemId, $pics);
                     redirect(R::getRoute("index")->generate());
                 }
@@ -78,8 +123,9 @@ class ItemController implements Controller
                 "currencies" => $currencies,
                 "item" => $item,
                 "title" => "Add item",
-                "action" => R::getRoute("addItem")->generate()
-            ])
+                "action" => R::getRoute("addItem")->generate(),
+                "errors" => $item->getErrors(),
+            ]),
         ]);
     }
 
@@ -99,17 +145,29 @@ class ItemController implements Controller
 
         $categories = CategoryRepository::getInstance()->getAllWithDepth();
         $currencies = CurrencyRepository::getInstance()->getAll();
+        $tagsData = TagRepository::getInstance()->getByItem($itemId);
+        $tags = [];
+        foreach ($tagsData as $data) {
+            $tags[] = $data->tag;
+        }
+        $item->setTags($tags);
 
         if (isPost()) {
             $usdPrice = CurrencyRepository::getInstance()->get(post("currency"));
+            $newTags = array_unique(preg_split("/[\\s,]+/", post("tags")));
+            $deleteTags = array_diff($tags, $newTags);
+            $addTags = array_diff($newTags, $tags);
 
             $item->setName(post("name"));
             $item->setDescription(post("description"));
             $item->setCategoryId(post("categoryId"));
             $item->setUsdPrice(post("price") / doubleval($usdPrice->getCoefficient()));
+            $item->setTags($newTags);
 
             if ($item->validate()) {
                 ItemRepository::getInstance()->update($item);
+                TagRepository::getInstance()->deleteAll($itemId, $deleteTags);
+                TagRepository::getInstance()->saveAll($itemId, $addTags);
                 redirect(R::getRoute("index")->generate());
             }
         }
@@ -120,9 +178,46 @@ class ItemController implements Controller
                 "currencies" => $currencies,
                 "item" => $item,
                 "title" => "Edit item",
-                "action" => R::getRoute("editItem")->generate(["id" => $item->getItemId()])
-            ])
+                "errors" => $item->getErrors(),
+                "action" => R::getRoute("editItem")->generate(["id" => $item->getItemId()]),
+            ]),
         ]);
+    }
+
+    public function getFirstPicture()
+    {
+        header("Content-type: image/png");
+        $itemId = D::getInstance()->getMatched()->getParam("id");
+        $size = D::getInstance()->getMatched()->getParam("size");
+        /** @var Picture $picture */
+        $picture = PictureRepository::getInstance()->getSingleOrNull(["item_id" => $itemId]);
+
+        if (null == $picture) {
+            echo "tu bi trebalo staviti defaultnu sliku :)";
+        } else {
+            $image = imagecreatefromstring($picture->getPictureString());
+            if ($size == "sm") {
+                $image = Picture::getResized($image, 128, 128);
+            }
+            imagepng($image);
+            imagedestroy($image);
+        }
+    }
+
+    public function getPicture()
+    {
+        header("Content-type: image/png");
+        $pictureId = D::getInstance()->getMatched()->getParam("id");
+        /** @var Picture $picture */
+        $picture = PictureRepository::getInstance()->get($pictureId);
+
+        if (null == $picture) {
+            echo "tu bi trebalo staviti defaultnu sliku :)";
+        } else {
+            $image = imagecreatefromstring($picture->getPictureString());
+            imagepng($image);
+            imagedestroy($image);
+        }
     }
 
 }

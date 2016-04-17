@@ -56,6 +56,7 @@ class AuthController implements Controller
     {
         if (isLoggedIn()) {
             unset($_SESSION["user"]);
+            unset($_SESSION["currency"]);
         }
         redirect(R::getRoute("index")->generate());
     }

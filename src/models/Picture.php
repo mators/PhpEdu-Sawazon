@@ -13,6 +13,11 @@ class Picture implements Model
      */
     private $pictureString;
 
+    /**
+     * @var int
+     */
+    private $pictureId;
+
     private $errors = [];
 
     /**
@@ -20,13 +25,17 @@ class Picture implements Model
      */
     private $file = null;
 
+    private $resizeTo = [];
+
     /**
      * Image constructor.
      * @param string $pictureString
+     * @param int $id
      */
-    public function __construct($pictureString = null)
+    public function __construct($pictureString = null, $id = null)
     {
         $this->pictureString = $pictureString;
+        $this->pictureId = $id;
     }
 
     /**
@@ -51,6 +60,14 @@ class Picture implements Model
     public function setFile($file)
     {
         $this->file = $file;
+    }
+
+    /**
+     * @param array $resizeTo
+     */
+    public function setResizeTo($resizeTo)
+    {
+        $this->resizeTo = $resizeTo;
     }
 
     public function validate()
@@ -83,11 +100,57 @@ class Picture implements Model
             }
 
             if (empty($this->errors)) {
-                $this->pictureString = pngStringFromImageInfo($file);
+                $this->pictureString = $this->pngStringFromImageInfo($file);
             }
         }
 
         return empty($this->errors);
+    }
+
+
+    private function pngStringFromImageInfo($file)
+    {
+        if (empty($file["tmp_name"])) {
+            return "";
+        }
+        $dim = getimagesize($file['tmp_name']);
+
+        switch(strtolower($dim['mime'])) {
+            case 'image/png':
+                $image = imagecreatefrompng($file['tmp_name']);
+                break;
+            case 'image/jpeg':
+                $image = imagecreatefromjpeg($file['tmp_name']);
+                break;
+            case 'image/gif':
+                $image = imagecreatefromgif($file['tmp_name']);
+                break;
+            default: die();
+        }
+
+        if (!empty($this->resizeTo)) {
+            $imageDest = imagecreatetruecolor($this->resizeTo[0], $this->resizeTo[1]);
+            imagecopyresized($imageDest, $image, 0, 0, 0, 0, $this->resizeTo[0], $this->resizeTo[1], $dim[0], $dim[1]);
+            $image = $imageDest;
+        }
+
+        ob_start();
+        imagepng($image);
+        $contents =  ob_get_contents();
+        ob_end_clean();
+        return $contents;
+    }
+
+    public static function getResized($image, $newW, $newH)
+    {
+        $imageDest = imagecreatetruecolor($newW, $newH);
+        imagecopyresized($imageDest, $image, 0, 0, 0, 0, $newW, $newH, imagesx($image), imagesy($image));
+        return $imageDest;
+    }
+
+    public function getPictureId()
+    {
+        return $this->pictureId;
     }
 
     public function getErrors()

@@ -20,8 +20,22 @@ $(function() {
                     $("#childrenDiv").append(tmp);
                     $("#" + id + " h4").html(data[i].name);
                     $("#" + id + " img").attr('src', data[i].iconURL);
+                    $("#" + id).attr('data-id', data[i].id);
                     tmp.show();
                 }
+
+                $(".cat").click(function () {
+                    var id = $(this).data('id');
+                    $.ajax({
+                        url: '/categories/' + id,
+                        type: 'GET',
+                        dataType: 'html',
+                        success: function (data) {
+                            $("#category").remove();
+                            $(".page").append(data);
+                        }
+                    });
+                });
             }
         });
     });

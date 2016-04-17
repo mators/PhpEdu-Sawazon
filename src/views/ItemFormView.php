@@ -45,7 +45,7 @@ class ItemFormView extends AbstractView
                         <label for="description" class="col-sm-2 control-label">Item description</label>
                         <div class="col-sm-10">
                             <textarea class="form-control" rows="5" id="description" name="description"><?php echo $this->item->getDescription(); ?></textarea>
-                            <span class="text-danger"></span>
+                            <span class="text-danger"><?php echo element("description", $this->errors, ""); ?></span>
                         </div>
                     </div>
                     <div class="form-group">
@@ -75,7 +75,7 @@ class ItemFormView extends AbstractView
                         <label for="price" class="col-xs-12 col-sm-2 control-label">Price</label>
                         <div class="col-xs-7">
                             <input type="number" step="0.01" class="form-control" value="<?php echo $this->item->getUsdPrice(); ?>" id="price" name="price">
-                            <span class="text-danger"></span>
+                            <span class="text-danger"><?php echo element("price", $this->errors, ""); ?></span>
                         </div>
                         <div class="col-xs-3">
                             <select class="form-control" id="currency" name="currency">
@@ -94,6 +94,15 @@ class ItemFormView extends AbstractView
                         <div class="col-sm-10">
                             <img id="iconImage" src="">
                             <input type="file" id="files" name="file[]" multiple="multiple">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="tags" class="col-sm-2 control-label">Tags</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="tags" name="tags" placeholder="Tags"
+                                   value="<?php echo implode(" ", $this->item->getTags()); ?>"
+                            />
+                            <span class="text-danger"><?php echo element("tags", $this->errors, ""); ?></span>
                         </div>
                     </div>
                     <div class="form-group">

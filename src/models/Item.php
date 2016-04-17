@@ -45,7 +45,12 @@ class Item implements Model
      */
     private $created;
 
-    private $errors;
+    /**
+     * @var array
+     */
+    private $tags = [];
+
+    private $errors = [];
 
     /**
      * Item constructor.
@@ -182,6 +187,22 @@ class Item implements Model
         return $this->created;
     }
 
+    /**
+     * @param array $tags
+     */
+    public function setTags($tags)
+    {
+        $this->tags = $tags;
+    }
+
+    /**
+     * @return array
+     */
+    public function getTags()
+    {
+        return $this->tags;
+    }
+
     public function validate()
     {
         $this->errors = [];
@@ -206,6 +227,18 @@ class Item implements Model
             $this->errors["price"] = "Price must be positive.";
         } else if (!is_numeric($this->usdPrice)) {
             $this->errors["price"] = "Price must be a number.";
+        }
+
+        if (!empty($this->tags)) {
+            if (count($this->tags) > 20) {
+                $this->errors["tags"] = "Maximum number of tags is 20";
+            } else {
+                foreach ($this->tags as $tag) {
+                    if (strlen($tag) > 30) {
+                        $this->errors["tags"] = "Each tag can be maximum 30 characters long";
+                    }
+                }
+            }
         }
 
         return empty($this->errors);
