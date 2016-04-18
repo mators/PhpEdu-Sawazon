@@ -9,6 +9,9 @@ use db\PictureRepository;
 use db\ReviewRepository;
 use db\TagRepository;
 use db\UserRepository;
+use lib\graficonlib\BarChart;
+use lib\graficonlib\DataCollection;
+use lib\graficonlib\DataCollectionItem;
 use models\Item;
 use models\Picture;
 use models\Review;
@@ -47,6 +50,8 @@ class ItemController implements Controller
             $usersReview[] = UserRepository::getInstance()->get($review->getUserId());
         }
 
+        ItemRepository::getInstance()->addView($itemId);
+
         echo new CommonView([
             "title" => "Sawazon - ".$item->getName(),
             "body" => new ItemView([
@@ -54,7 +59,8 @@ class ItemController implements Controller
                 "pictures" => $pictures,
                 "seller" => $seller,
                 "reviews" => $reviews,
-                "usersReview" => $usersReview
+                "usersReview" => $usersReview,
+                "views" => ItemRepository::getInstance()->getViews($itemId)
             ]),
             "scripts" => ["/assets/js/editReviewModal.js"]
         ]);
@@ -218,6 +224,32 @@ class ItemController implements Controller
             imagepng($image);
             imagedestroy($image);
         }
+    }
+
+    public function weekViewsChart()
+    {
+        header('Content-Type: image/png');
+
+        $itemId = D::getInstance()->getMatched()->getParam("id");
+        $stats = ItemRepository::getInstance()->getWeekViews($itemId);
+
+        $barChart = new BarChart("Views last week", 300, 700);
+        $barChart->set_font_size(5);
+
+        $data = new DataCollection();
+        $data->add_items([
+            new DataCollectionItem((int)$stats->day1, date("Y-m-d", strtotime("-6 days"))),
+            new DataCollectionItem((int)$stats->day2, date("Y-m-d", strtotime("-5 days"))),
+            new DataCollectionItem((int)$stats->day3, date("Y-m-d", strtotime("-4 days"))),
+            new DataCollectionItem((int)$stats->day4, date("Y-m-d", strtotime("-3 days"))),
+            new DataCollectionItem((int)$stats->day5, date("Y-m-d", strtotime("-2 days"))),
+            new DataCollectionItem((int)$stats->day6, date("Y-m-d", strtotime("-1 days"))),
+            new DataCollectionItem((int)$stats->day7, date("Y-m-d"))
+        ]);
+        $ids = $barChart->add_data($data);
+        $barChart->color_data(66, 139, 202, $ids);
+
+        imagepng($barChart->render());
     }
 
 }

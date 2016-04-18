@@ -95,7 +95,9 @@ class AuthController implements Controller
             }
 
             $user->validate();
-            $picture->validate();
+            if (!empty($_FILES["file"]["name"])) {
+                $picture->validate();
+            }
 
             $errors = array_merge($user->getErrors(), $picture->getErrors(), $errors);
 

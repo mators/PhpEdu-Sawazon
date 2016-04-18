@@ -3,6 +3,7 @@
 namespace db;
 
 use models\Item;
+use models\User;
 
 
 class ItemRepository extends Repository
@@ -63,26 +64,37 @@ class ItemRepository extends Repository
 
     public function getInCategories($categoryIds, $sort = 0)
     {
-        $placeholders = [];
-        for ($i = count($categoryIds); $i > 0 ; --$i) {
-            $placeholders[] = "?";
-        }
-        $sql = "SELECT * FROM items WHERE category_id IN ("
-            . implode(",", $placeholders) . ") " .
-            "ORDER BY " . self::$ORDER_BY[$sort];
+        return parent::getAllIn("category_id", $categoryIds, self::$ORDER_BY[$sort]);
+    }
 
+    public function getAllByUsers($users)
+    {
+        return parent::getAllIn("user_id", $users);
+    }
+
+    public function addView($itemId)
+    {
+        $sql = "INSERT INTO `item_views` (`item_id`, `date`, `count`) VALUES (" . $itemId .
+            ",'" . date("Y-m-d") ."',1) ON DUPLICATE KEY UPDATE `count`=`count`+1";
+        DBPool::getInstance()->prepare($sql)->execute();
+    }
+
+    public function getViews($itemId)
+    {
+        $sql = "SELECT SUM(`count`) AS result FROM `item_views` WHERE `item_id`=".$itemId;
         $statement = DBPool::getInstance()->prepare($sql);
-        $statement->execute($categoryIds);
+        $statement->execute();
+        return $statement->fetch()->result;
+    }
 
-        if ($statement->rowCount() < 1) {
-            return [];
-        }
-
-        $ret = [];
+    public function getWeekViews($itemId)
+    {
+        $sql = "SELECT * FROM item_week_views WHERE item_id=".$itemId;
+        $statement = DBPool::getInstance()->prepare($sql);
+        $statement->execute();
         foreach ($statement as $row) {
-            $ret[] = $this->modelFromData($row);
+            return $row;
         }
-        return $ret;
     }
 
     protected function getTable()

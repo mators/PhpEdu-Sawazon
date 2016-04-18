@@ -71,9 +71,9 @@ class CategoriesView extends AbstractView
                         <div class="col-xs-offset-<?php echo $category->getDepth() - 1; ?> col-xs-10">
                             <a class="open-edit-modal" href="" data-toggle="modal" data-target="#myModal"
                                data-id="<?php echo $category->getCategoryId(); ?>"
-                                data-name="<?php echo $category->getName(); ?>"
-                                 data-description="<?php echo $category->getDescription(); ?>">
-                                <?php echo $category->getName(); ?>
+                                data-name="<?php echo __($category->getName()); ?>"
+                                 data-description="<?php echo __($category->getDescription()); ?>">
+                                <?php echo __($category->getName()); ?>
                             </a>&nbsp;
                             <?php if ($category->getDepth() == 1) { ?>
                                 <button type="button" class="open-add-modal btn btn-default btn-xs" data-toggle="modal" data-target="#myModal"

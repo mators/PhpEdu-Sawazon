@@ -53,6 +53,11 @@ class Item implements Model
     private $errors = [];
 
     /**
+     * @var User
+     */
+    private $user;
+
+    /**
      * Item constructor.
      * @param int $itemId
      * @param string $name
@@ -97,6 +102,16 @@ class Item implements Model
     public function getName()
     {
         return $this->name;
+    }
+
+    public function getUser()
+    {
+        return $this->user;
+    }
+
+    public function setUser($user)
+    {
+        $this->user = $user;
     }
 
     /**

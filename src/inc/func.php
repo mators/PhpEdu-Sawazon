@@ -84,3 +84,24 @@ function chosenCurrency()
         "coefficient" => "1"
     ]);
 }
+
+function compareByDateCreated($a, $b)
+{
+    if (is_callable([$a, "getCreated"]) && is_callable([$b, "getCreated"])){
+        if ($a->getCreated() == $b->getCreated()) {
+            return 0;
+        }
+        return ($a->getCreated() > $b->getCreated()) ? -1 : 1;
+    }
+}
+
+function at($text)
+{
+    $bold = preg_replace_callback("#\\*\\*([^\\*]*)\\*\\*#", function ($match) {
+        return "<b>".$match[1]."</b>";
+    }, __($text));
+
+    return preg_replace_callback("#//([^/]*)//#", function ($match) {
+        return "<i>".$match[1]."</i>";
+    }, $bold);
+}

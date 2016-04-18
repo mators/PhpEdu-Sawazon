@@ -111,7 +111,7 @@ class CategoryRepository extends Repository
         return $ret;
     }
 
-    public function  saveUserCategories($userId, $catIds)
+    public function saveUserCategories($userId, $catIds)
     {
         $sql = "INSERT INTO users_categories (user_id, category_id)
                 VALUES ";
@@ -120,6 +120,18 @@ class CategoryRepository extends Repository
         }
         $sql = substr($sql, 0, -1);
         DBPool::getInstance()->prepare($sql)->execute();
+    }
+
+    public function getUserCategories($userId)
+    {
+        $sql = "SELECT category_id FROM users_categories WHERE user_id=?";
+        $statement = DBPool::getInstance()->prepare($sql);
+        $statement->execute([intval($userId)]);
+        $ids = [];
+        foreach ($statement as $row) {
+            $ids[] = $row->category_id;
+        }
+        return $ids;
     }
 
     protected function getTable()

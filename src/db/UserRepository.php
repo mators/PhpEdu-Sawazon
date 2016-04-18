@@ -68,6 +68,26 @@ class UserRepository extends Repository
         ]);
     }
 
+    public function getFollowing($userId)
+    {
+        $sql = "SELECT user_id FROM user_followers WHERE follower_id=?";
+        $statement = DBPool::getInstance()->prepare($sql);
+        $statement->execute([$userId]);
+        $ids = [];
+        foreach ($statement as $row) {
+            $ids[] = $row->user_id;
+        }
+        return $ids;
+    }
+
+    public function isFollowing($userId, $followerId)
+    {
+        $sql = "SELECT COUNT(*) AS result FROM user_followers WHERE user_id=? AND follower_id=?";
+        $statement = DBPool::getInstance()->prepare($sql);
+        $statement->execute([$userId, $followerId]);
+        return $statement->fetch()->result > 0;
+    }
+
     protected function getTable()
     {
         return "users";

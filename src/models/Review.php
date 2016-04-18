@@ -42,6 +42,16 @@ class Review implements Model
     private $errors = [];
 
     /**
+     * @var User
+     */
+    private $user;
+
+    /**
+     * @var Item
+     */
+    private $item;
+
+    /**
      * Review constructor.
      * @param int $reviewId
      * @param int $grade
@@ -106,6 +116,32 @@ class Review implements Model
     public function setText($text)
     {
         $this->text = $text;
+    }
+
+    /**
+     * @return Item
+     */
+    public function getItem()
+    {
+        return $this->item;
+    }
+
+    /**
+     * @param Item $item
+     */
+    public function setItem($item)
+    {
+        $this->item = $item;
+    }
+
+    public function setUser($user)
+    {
+        $this->user = $user;
+    }
+
+    public function getUser()
+    {
+        return $this->user;
     }
 
     /**

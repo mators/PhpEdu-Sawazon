@@ -64,7 +64,7 @@ class CommonView extends AbstractView
                                     <ul class="dropdown-menu">
                                         <li class="dropdown-header">Signed in as <strong><?php echo __(user()["username"]); ?></strong></li>
                                         <li class="dropdown-header">User actions</li>
-                                        <li><a href="<?php echo R::getRoute("profile")->generate(); ?>">Profile</a></li>
+                                        <li><a href="<?php echo R::getRoute("profile")->generate(["username"=>__(user()["username"])]); ?>">Profile</a></li>
                                         <li><a href="<?php echo R::getRoute("accountSettings")->generate(["username" => user()["username"]]); ?>">Account settings</a></li>
                                         <li><a href="<?php echo R::getRoute("addItem")->generate(["username" => user()["username"]]); ?>">Add item</a></li>
                                         <li role="separator" class="divider"></li>

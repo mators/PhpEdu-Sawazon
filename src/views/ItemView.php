@@ -27,6 +27,11 @@ class ItemView extends AbstractView
 
     private $pictures = [];
 
+    /**
+     * @var int
+     */
+    private $views;
+
     protected function outputHTML()
     {
         ?>
@@ -135,7 +140,7 @@ class ItemView extends AbstractView
                                     <span class="text-muted"><?php echo $this->item->getModified(); ?></span>
                                     <br><hr>
                                     <strong>Description:</strong>
-                                    <p><?php echo __($this->item->getDescription()); ?></p>
+                                    <p><?php echo at($this->item->getDescription()); ?></p>
                                     <br><hr>
                                     <span class="glyphicon glyphicon-tags"></span>     <?php echo __(implode(" ", $this->item->getTags())); ?>
                                     <hr>
@@ -175,7 +180,7 @@ class ItemView extends AbstractView
                                             <button class="open-edit-modal pull-right btn btn-primary"
                                                 data-toggle="modal" data-target="#review-form-modal"
                                                  data-grade="<?php echo $this->reviews[$j]->getGrade();?>"
-                                                  data-text="<?php echo $this->reviews[$j]->getText();?>"
+                                                  data-text="<?php echo __($this->reviews[$j]->getText());?>"
                                                    data-id="<?php echo $this->item->getItemId();?>"
                                                     data-rev-id="<?php echo $this->reviews[$j]->getReviewId();?>">
                                                 Edit
@@ -192,11 +197,11 @@ class ItemView extends AbstractView
                                         <p>
                                             User:
                                             <a href="<?php echo R::getRoute("profile")->generate(["username" => $this->usersReview[$j]->getUsername()]); ?>">
-                                                <?php echo $this->usersReview[$j]->getUsername(); ?>
+                                                <?php echo __($this->usersReview[$j]->getUsername()); ?>
                                             </a>, <span class="text-muted"><?php echo $this->reviews[$j]->getCreated(); ?></span>
                                         </p>
                                         <div class="well well-sm">
-                                            <?php echo $this->reviews[$j]->getText(); ?>
+                                            <?php echo __($this->reviews[$j]->getText()); ?>
                                         </div>
                                         <hr>
                                     <?php } ?>
@@ -222,11 +227,22 @@ class ItemView extends AbstractView
                                 <?php echo __($this->seller->getEMail()); ?>
                             </a>
                         </p>
+                        <p>
+                            <span class="glyphicon glyphicon-eye-open"></span>
+                            <strong><?php echo $this->views; ?></strong>
+                        </p>
+                        <strong>Views last week:</strong>
+                        <img class="img img-responsive" src="<?php echo R::getRoute("weekViewsChart")->generate(["id" => $this->item->getItemId()]); ?>"
                     </div>
                 </div>
             </div>
         </div>
         <?php
+    }
+
+    public function setViews($views)
+    {
+        $this->views = $views;
     }
 
     public function setUsersReview($usersReview)

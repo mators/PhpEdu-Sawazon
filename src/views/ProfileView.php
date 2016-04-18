@@ -3,6 +3,7 @@
 namespace views;
 
 use models\Item;
+use models\Quack;
 use models\Review;
 use models\User;
 use router\Router as R;
@@ -18,6 +19,10 @@ class ProfileView extends AbstractView
     private $reviews = [];
 
     private $items = [];
+
+    private $isFollowing;
+
+    private $quacks = [];
 
     protected function outputHTML()
     {
@@ -60,7 +65,7 @@ class ProfileView extends AbstractView
                 <div class="col-md-4">
                     <div class="panel panel-default">
                         <div class="panel-body">
-                            <h3><?php echo $this->user->getUsername(); ?></h3>
+                            <h3><?php echo __($this->user->getUsername()); ?></h3>
                             <div class="col-xs-3 col-md-12 thumbnail">
                                 <div class="image">
                                     <img src="<?php echo R::getRoute("profilePicture")->generate([
@@ -68,8 +73,18 @@ class ProfileView extends AbstractView
                                         "size" => "or",
                                     ])?>" onerror="this.src='/assets/img/default-avatar.jpg'" />
                                 </div>
-
                             </div>
+                            <?php if (isLoggedIn() && !isCurrentUserId($this->user->getUserID())) {
+                                if ($this->isFollowing) { ?>
+                                    <button id="unfollow" class="btn btn-lg btn-danger">
+                                        <span class="glyphicon glyphicon-minus"></span>Unfollow
+                                    </button>
+                                <?php } else { ?>
+                                    <button id="follow" class="btn btn-lg btn-success">
+                                        <span class="glyphicon glyphicon-plus"></span>Follow
+                                    </button>
+                                <?php }
+                            } ?>
                         </div>
                     </div>
                 </div>
@@ -78,12 +93,17 @@ class ProfileView extends AbstractView
                     <ul class="nav nav-tabs" role="tablist">
                         <li role="presentation" class="active">
                             <a href="#wall" aria-controls="wall" role="tab" data-toggle="tab">
-                                <?php echo $this->user->getUsername(); ?>'s items
+                                <?php echo __($this->user->getUsername()); ?>'s items
                             </a>
                         </li>
                         <li role="presentation">
                             <a href="#reviews" aria-controls="reviews" role="tab" data-toggle="tab">
-                                <?php echo $this->user->getUsername(); ?>'s reviews
+                                <?php echo __($this->user->getUsername()); ?>'s reviews
+                            </a>
+                        </li>
+                        <li role="presentation">
+                            <a href="#quacks" aria-controls="quacks" role="tab" data-toggle="tab">
+                                <?php echo __($this->user->getUsername()); ?>'s quacks
                             </a>
                         </li>
                     </ul>
@@ -105,7 +125,7 @@ class ProfileView extends AbstractView
                                                 <a href="<?php echo R::getRoute("showItem")->generate(["id" => $item->getItemId()]);?>">
                                                     <object data="<?php echo R::getRoute("itemFirstPicture")->generate([
                                                         "id" => $item->getItemId(),
-                                                        "size" => "sm"
+                                                        "size" => "sm",
                                                     ]);?>" type="image/png">
                                                         <img src="/assets/img/default-image.jpg">
                                                     </object>
@@ -115,7 +135,7 @@ class ProfileView extends AbstractView
                                                 <a href="<?php echo R::getRoute("showItem")->generate(["id" => $item->getItemId()]);?>">
                                                     <h4 class="media-heading"><?php echo __($item->getName());?></h4>
                                                 </a>
-                                                <p><?php echo strlen($item->getDescription()) < 100 ? __($item->getDescription()) : __(substr($item->getDescription(), 0, 97)) . "...";?></p>
+                                                <p><?php echo strlen($item->getDescription()) < 100 ? at($item->getDescription()) : at(substr($item->getDescription(), 0, 97)) . "...";?></p>
                                                 <p class="text-muted">Date created: <?php echo $item->getCreated();?></p>
                                                 <p class="pull-right"><strong>Price: </strong>
                                                     <?php echo round($item->getUsdPrice() * chosenCurrency()["coefficient"], 2)." ".chosenCurrency()["short"];?>
@@ -153,10 +173,21 @@ class ProfileView extends AbstractView
                                             </a>, <span class="text-muted"><?php echo $review->getCreated(); ?></span>
                                         </p>
                                         <div class="well well-sm">
-                                            <?php echo $review->getText(); ?>
+                                            <?php echo at($review->getText()); ?>
                                         </div>
                                         <hr>
                                     <?php } ?>
+                                </div>
+                                <div role="tabpanel" class="tab-pane" id="quacks">
+                                    <?php /** @var Quack $quack */
+                                    foreach ($this->quacks as $quack) { ?>
+                                        <div class="well well-sm">
+                                            <span class="text-muted"><?php echo $quack->getCreated();?></span>
+                                            <p>
+                                                <?php echo at($quack->getText());?>
+                                            </p>
+                                        </div>
+                                    <?php }?>
                                 </div>
                             </div>
                         </div>
@@ -165,6 +196,16 @@ class ProfileView extends AbstractView
             </div>
         </div>
         <?php
+    }
+
+    public function setQuacks($quacks)
+    {
+        $this->quacks = $quacks;
+    }
+
+    public function setIsFollowing($isFollowing)
+    {
+        $this->isFollowing = $isFollowing;
     }
 
     public function setItems($items)

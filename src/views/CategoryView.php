@@ -26,7 +26,7 @@ class CategoryView extends AbstractView
         <?php } ?>
 
         <div id="category">
-            <h3><?php echo $this->category->getName(); ?></h3>
+            <h3><?php echo __($this->category->getName()); ?></h3>
             <div class="row">
                 <div class="col-sm-8">
                     <div class="panel panel-default">
@@ -85,7 +85,7 @@ class CategoryView extends AbstractView
                                         <a href="<?php echo R::getRoute("showItem")->generate(["id" => $item->getItemId()]);?>">
                                             <h4 class="media-heading"><?php echo __($item->getName());?></h4>
                                         </a>
-                                        <p><?php echo strlen($item->getDescription()) < 100 ? __($item->getDescription()) : __(substr($item->getDescription(), 0, 97)) . "...";?></p>
+                                        <p><?php echo strlen($item->getDescription()) < 100 ? at($item->getDescription()) : at(substr($item->getDescription(), 0, 97)) . "...";?></p>
                                         <p class="text-muted">Date created: <?php echo $item->getCreated();?></p>
                                         <p class="pull-right"><strong>Price: </strong>
                                             <?php echo round($item->getUsdPrice() * chosenCurrency()["coefficient"], 2)." ".chosenCurrency()["short"];?>
@@ -101,7 +101,7 @@ class CategoryView extends AbstractView
                     <div class="panel panel-default">
                         <div class="panel-body">
                             <strong>Description:</strong>
-                            <p><?php echo $this->category->getDescription(); ?></p>
+                            <p><?php echo at($this->category->getDescription()); ?></p>
                             <strong>Number of items:</strong>
                             <p><?php echo count($this->items); ?></p>
                             <strong>Ten most expensive items:</strong>

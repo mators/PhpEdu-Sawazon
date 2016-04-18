@@ -28,7 +28,7 @@ class BrowseView extends AbstractView
                                 <a class="getChildren" data-id="<?php echo $category->getCategoryId(); ?>" href="#childrenWell">
                                     <img id="smallerImg" src="<?php echo R::getRoute("getIcon")->generate(["id" => $category->getCategoryId()]); ?>">
                                     <div class="caption">
-                                        <h3><?php echo $category->getName(); ?></h3>
+                                        <h3><?php echo __($category->getName()); ?></h3>
                                     </div>
                                 </a>
                             </div>

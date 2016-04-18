@@ -34,6 +34,7 @@ R::registerRoutes([
     R::route("/items/(?P<id>\\d+)/(?P<size>sm|or)", "item", "getFirstPicture", "itemFirstPicture"),
     R::route("/pictures/(?P<id>\\d+)", "item", "getPicture", "itemPicture"),
     R::route("/items/(?P<id>\\d+)/addReview", "review", "add", "addReview"),
-    R::route("/items/(?P<id>\\d+)/(?P<revId>\\d+)/edit", "review", "edit", "editReview")
+    R::route("/items/(?P<id>\\d+)/(?P<revId>\\d+)/edit", "review", "edit", "editReview"),
+    R::route("/items/(?P<id>\\d+)/chart", "item", "weekViewsChart", "weekViewsChart")
 
 ]);

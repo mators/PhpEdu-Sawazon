@@ -48,6 +48,35 @@ abstract class Repository
         return $ret;
     }
 
+    public function getAllIn($attribute, array $inValues, $orderBy = null)
+    {
+        if (empty($inValues)) {
+            return [];
+        }
+        $placeholders = [];
+        for ($i = count($inValues); $i > 0 ; --$i) {
+            $placeholders[] = "?";
+        }
+        $sql = "SELECT * FROM ".$this->getTable()." WHERE ".$attribute." IN ("
+            . implode(",", $placeholders) . ")";
+        if ($orderBy != null) {
+            $sql .= " ORDER BY " . $orderBy;
+        }
+
+        $statement = DBPool::getInstance()->prepare($sql);
+        $statement->execute($inValues);
+
+        if ($statement->rowCount() < 1) {
+            return [];
+        }
+
+        $ret = [];
+        foreach ($statement as $row) {
+            $ret[] = $this->modelFromData($row);
+        }
+        return $ret;
+    }
+
     public function save(array $attributes = [])
     {
         $columns = [];

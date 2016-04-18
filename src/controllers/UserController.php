@@ -3,6 +3,7 @@
 namespace controllers;
 
 use db\ItemRepository;
+use db\QuackRepository;
 use db\ReviewRepository;
 use db\UserRepository;
 use models\Picture;
@@ -72,14 +73,21 @@ class UserController implements Controller
 
         $items = ItemRepository::getInstance()->getUsersItems($user->getUserID());
         $reviews = ReviewRepository::getInstance()->getAll(["user_id" => $user->getUserID()]);
-        // quacks
+        $quacks = QuackRepository::getInstance()->getAll(["user_id" => $user->getUserID()]);
+
+        $isFollowing = false;
+        if(isLoggedIn()) {
+            $isFollowing = UserRepository::getInstance()->isFollowing($user->getUserID(), user()["id"]);
+        }
 
         echo new CommonView([
             "title" => "Sawazon - ".$username,
             "body" => new ProfileView([
                 "user" => $user,
                 "reviews" => $reviews,
-                "items" => $items
+                "items" => $items,
+                "quacks" => $quacks,
+                "isFollowing" => $isFollowing
             ]),
             "scripts" => ["/assets/js/editReviewModal.js"]
         ]);

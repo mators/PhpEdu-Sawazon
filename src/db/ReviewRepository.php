@@ -3,6 +3,7 @@
 namespace db;
 
 use models\Review;
+use models\User;
 
 
 class ReviewRepository extends Repository
@@ -37,6 +38,11 @@ class ReviewRepository extends Repository
             "user_id" => $review->getUserId(),
             "item_id" => $review->getItemId()
         ]);
+    }
+
+    public function getAllByUsers($users)
+    {
+        return parent::getAllIn("user_id", $users);
     }
 
     protected function getTable()
